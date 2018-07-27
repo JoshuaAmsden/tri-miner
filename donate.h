@@ -23,7 +23,7 @@
  *
  */
 #define MIN_DEV_DONATE_PERCENT 1
-
+static const char* DONATION_ADDR = "";
 
 // 100 minutes
 #define DONATE_CYCLE_TIME 6000

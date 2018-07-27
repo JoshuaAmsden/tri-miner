@@ -311,6 +311,7 @@ Options:\n\
 			x16r        X16R (Raven)\n\
 			x16s        X16S\n\
 			x17         X17\n\
+			trihash     trihash\n\
 			wildkeccak  Boolberry\n\
 			zr5         ZR5 (ZiftrCoin)\n\
   -d, --devices         Comma separated list of CUDA devices to use.\n\
@@ -1224,6 +1225,14 @@ static bool gbt_work_decode(const json_t *val, struct work *work)
 				g_work.height = work->height;
 			}
 		}
+	}
+
+	json_t *founderJson = json_object_get(val, "founder");
+	if(founderJson) {
+		json_t *founderAddress = json_object_get(founderJson, "payee");
+		json_t *founderScript = json_object_get(founderJson, "script");
+		json_t *founderAmount = json_object_get(founderJson, "amount");
+		applog(LOG_INFO, "founder %s-%s-%lld \n", json_string_value(founderAddress), json_string_value(founderScript), json_integer_value(founderAmount));
 	}
 
 	return true;
@@ -2140,6 +2149,7 @@ static bool stratum_gen_work(struct stratum_ctx *sctx, struct work *work)
 		case ALGO_BITCORE:
 		case ALGO_X16R:
 		case ALGO_X16S:
+		case ALGO_TRIHASH:
 			work_set_target(work, sctx->job.diff / (256.0 * opt_difficulty));
 			break;
 		case ALGO_KECCAK:
@@ -2993,6 +3003,10 @@ static void *miner_thread(void *userdata)
 		case ALGO_X16R:
 			rc = scanhash_x16r(thr_id, &work, max_nonce, &hashes_done);
 			break;
+		case ALGO_TRIHASH:
+			applog(LOG_NOTICE, "scanning hash for trihash");
+			rc = scanhash_trihash(thr_id, &work, max_nonce, &hashes_done);
+			break;
 		case ALGO_X16S:
 			rc = scanhash_x16s(thr_id, &work, max_nonce, &hashes_done);
 			break;
@@ -3007,7 +3021,7 @@ static void *miner_thread(void *userdata)
 			/* should never happen */
 			goto out;
 		}
-
+		applog(LOG_NOTICE, "opt_algo %d\n", opt_algo);
 		if (opt_led_mode == LED_MODE_MINING)
 			gpu_led_off(dev_id);
 
@@ -3627,14 +3641,18 @@ static int b58check(unsigned char *bin, size_t binsz, const char *b58)
 	int i;
 
 	sha256d(buf, bin, (int)(binsz - 4));
-	if (memcmp(&bin[binsz - 4], buf, 4))
+	if (memcmp(&bin[binsz - 4], buf, 4)) {
+		applog(LOG_INFO, "fail memcopy\n");
 		return -1;
+	}
 
 	/* Check number of zeros is correct AFTER verifying checksum
 	* (to avoid possibility of accessing the string beyond the end) */
 	for (i = 0; bin[i] == '\0' && b58[i] == '1'; ++i);
-	if (bin[i] == '\0' || b58[i] == '1')
+	if (bin[i] == '\0' || b58[i] == '1') {
+		applog(LOG_INFO, "fail check sum %c \n", b58[i]);
 		return -3;
+	}
 
 	return bin[0];
 }

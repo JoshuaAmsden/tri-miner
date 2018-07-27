@@ -2333,6 +2333,8 @@ void print_hash_tests(void)
 
 	x17hash(&hash[0], &buf[0]);
 	printpfx("X17", hash);
+	trihash(&hash[0], &buf[0]);
+	printpfx("trihash", hash);
 
 	//memcpy(buf, zrtest, 80);
 	zr5hash(&hash[0], &buf[0]);

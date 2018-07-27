@@ -255,6 +255,7 @@
     <ClCompile Include="stats.cpp" />
     <ClCompile Include="nvml.cpp" />
     <ClCompile Include="api.cpp" />
+    <ClCompile Include="hash_selection.cpp" />
     <ClCompile Include="sysinfos.cpp" />
     <ClCompile Include="crc32.c" />
     <ClCompile Include="hefty1.c" />
@@ -367,6 +368,7 @@
     <ClInclude Include="hefty1.h" />
     <ClInclude Include="algos.h" />
     <ClInclude Include="miner.h" />
+    <ClInclude Include="hash_selection.h" />
     <ClInclude Include="nvml.h" />
     <ClInclude Include="quark\cuda_bmw512_sm3.cuh" />
     <ClInclude Include="quark\cuda_quark_groestl512_sm2.cuh" />
@@ -449,6 +451,7 @@
     <CudaCompile Include="x16\cuda_x16_simd512_80.cu" />
     <CudaCompile Include="x16\x16r.cu" />
     <CudaCompile Include="x16\x16s.cu" />
+    <CudaCompile Include="trihash\trihash.cu" />
     <CudaCompile Include="zr5.cu" />
     <CudaCompile Include="heavy\cuda_blake512.cu">
     </CudaCompile>

@@ -1015,6 +1015,10 @@
     <CudaCompile Include="x16\x16s.cu">
       <Filter>Source Files\CUDA\x16</Filter>
     </CudaCompile>
+    <CudaCompile Include="trihash\trihash.cu">
+      <Filter>Source Files\CUDA\x16</Filter>
+      <Filter>Source Files\CUDA\x17</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\ccminer.ico">

@@ -544,6 +544,12 @@ public:
         for (int i = 0; i < WIDTH; i++)
             pn[i] = 0;
     }
+	/*
+    uint256(const uint32_t* b) {
+    	for (int i = 0; i < WIDTH; i++) {
+    		pn[i] = b[i];
+    	}
+    }*/
 
     uint256(const basetype& b)
     {
@@ -587,7 +593,34 @@ public:
         else
             *this = 0;
     }
+
+	void setUint32t(const uint32_t* b) {
+		for (int i = 0; i < WIDTH; i++) {
+			pn[i] = b[i];
+		}
+	}
+	uint8_t GetNibble(int index) const
+	{
+		index = 63 - index;
+		uint8_t* data = (uint8_t*)pn;
+		if (index % 2 == 1) {
+			//int ret = (pn[index / 2] >> 4);
+			return(data[index / 2] >> 4);
+		}
+		return(data[index / 2] & 0x0F);
+	}
 };
+
+/* uint256 from const char *.
+ * This is a separate function because the constructor uint256(const char*) can result
+ * in dangerously catching uint256(0).
+ */
+/*inline uint256 uint256S(const char *str)
+{
+    uint256 rv;
+    rv.SetHex(str);
+    return rv;
+}*/
 
 inline bool operator==(const uint256& a, uint64 b)                           { return (base_uint256)a == b; }
 inline bool operator!=(const uint256& a, uint64 b)                           { return (base_uint256)a != b; }
